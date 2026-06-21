@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Added `GodexRunSummary` for rendering Godex task, worktree candidate, validation, and diff summaries in terminal UIs.
+
 ### Fixed
 
 - Fixed `Shift+Enter` in Apple Terminal by detecting local macOS modifier state when Terminal.app sends plain Return.

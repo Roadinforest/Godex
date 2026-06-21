@@ -12,6 +12,15 @@ export {
 export { Box } from "./components/box.ts";
 export { CancellableLoader } from "./components/cancellable-loader.ts";
 export { Editor, type EditorOptions, type EditorTheme } from "./components/editor.ts";
+export {
+	type GodexAgentStatus,
+	GodexRunSummary,
+	type GodexRunSummaryAgent,
+	type GodexRunSummaryOptions,
+	type GodexRunSummaryTheme,
+	type GodexTaskStatus,
+	type GodexValidationStatus,
+} from "./components/godex-run-summary.ts";
 export { Image, type ImageOptions, type ImageTheme } from "./components/image.ts";
 export { Input } from "./components/input.ts";
 export { Loader, type LoaderIndicatorOptions } from "./components/loader.ts";

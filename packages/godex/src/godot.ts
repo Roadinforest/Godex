@@ -1,4 +1,4 @@
-import { access, readdir, readFile } from "node:fs/promises";
+import { access, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { basename, extname, join, relative, resolve } from "node:path";
 import type { SandboxRunner } from "./sandbox-runner.ts";
 import type { GodotProjectInfo, ValidationCheck, ValidationResult } from "./types.ts";
@@ -8,6 +8,19 @@ const sceneExtensions = new Set([".scn", ".tscn"]);
 const scriptExtensions = new Set([".cs", ".gd"]);
 const assetExtensions = new Set([".aseprite", ".bmp", ".jpeg", ".jpg", ".ogg", ".png", ".tres", ".wav", ".webp"]);
 const configExtensions = new Set([".cfg", ".godot", ".import", ".json", ".toml"]);
+
+export async function ensureGodotProject(projectPath: string): Promise<GodotProjectInfo> {
+	const resolvedProjectPath = resolve(projectPath);
+	await mkdir(resolvedProjectPath, { recursive: true });
+
+	const projectFile = join(resolvedProjectPath, "project.godot");
+	if (!(await exists(projectFile))) {
+		const projectName = escapeGodotString(basename(resolvedProjectPath) || "Godex Project");
+		await writeFile(projectFile, `[application]\nconfig/name="${projectName}"\n`, "utf8");
+	}
+
+	return inspectGodotProject(resolvedProjectPath);
+}
 
 export async function inspectGodotProject(projectPath: string): Promise<GodotProjectInfo> {
 	const resolvedProjectPath = resolve(projectPath);
@@ -124,6 +137,10 @@ function parseProjectName(projectConfig: string): string | undefined {
 	if (match?.[1]) return match[1];
 	const fallback = projectConfig.match(/^\s*application\/config\/name\s*=\s*"([^"]+)"/m);
 	return fallback?.[1] ?? undefined;
+}
+
+function escapeGodotString(value: string): string {
+	return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 }
 
 export function formatProjectInfo(info: GodotProjectInfo): string {

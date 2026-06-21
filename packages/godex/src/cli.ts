@@ -2,19 +2,21 @@
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { runGodexChat } from "./chat.ts";
+import { type ParsedCommand, parseChatOptions, parseCommand } from "./cli-args.ts";
 import { formatProjectInfo, inspectGodotProject } from "./godot.ts";
 import { loadTask, runGodexTask } from "./orchestrator.ts";
 import type { RunTaskOptions } from "./types.ts";
 import { WorktreeManager } from "./worktree-manager.ts";
 
-interface ParsedCommand {
-	command: string;
-	positionals: string[];
-	flags: Map<string, string | boolean>;
-}
-
 export async function main(argv: string[]): Promise<void> {
 	try {
+		const [command = "help", ...rest] = argv;
+		if (command === "chat") {
+			await runGodexChat(parseChatOptions(rest));
+			return;
+		}
+
 		const parsed = parseCommand(argv);
 		if (parsed.command === "help" || parsed.flags.has("help")) {
 			console.log(helpText());
@@ -72,35 +74,6 @@ export async function main(argv: string[]): Promise<void> {
 	}
 }
 
-export function parseCommand(argv: string[]): ParsedCommand {
-	const [command = "help", ...rest] = argv;
-	const flags = new Map<string, string | boolean>();
-	const positionals: string[] = [];
-
-	for (let index = 0; index < rest.length; index += 1) {
-		const arg = rest[index] ?? "";
-		if (!arg.startsWith("--")) {
-			positionals.push(arg);
-			continue;
-		}
-		const [rawKey, inlineValue] = arg.slice(2).split("=", 2);
-		if (!rawKey) throw new Error(`Invalid flag: ${arg}`);
-		if (inlineValue !== undefined) {
-			flags.set(rawKey, inlineValue);
-			continue;
-		}
-		const next = rest[index + 1];
-		if (next && !next.startsWith("--")) {
-			flags.set(rawKey, next);
-			index += 1;
-			continue;
-		}
-		flags.set(rawKey, true);
-	}
-
-	return { command, flags, positionals };
-}
-
 function parseRunOptions(parsed: ParsedCommand): RunTaskOptions {
 	const projectRoot = resolve(getStringFlag(parsed, "project") ?? process.cwd());
 	const goal = getStringFlag(parsed, "goal");
@@ -136,6 +109,7 @@ function getNumberFlag(parsed: ParsedCommand, name: string): number | undefined 
 function helpText(): string {
 	return [
 		"Usage:",
+		"  godex chat --project <godot-project> [pi-options...] [message...]",
 		"  godex inspect --project <godot-project>",
 		"  godex run --project <godot-project> --goal <goal> [--agents 2] [--run-project] [--godot-bin godot]",
 		"  godex result <task-id> --project <godot-project>",
