@@ -1,3 +1,4 @@
+import { stripVTControlCharacters } from "node:util";
 import { describe, expect, test } from "vitest";
 
 import { formatGodexStartupSummary, shouldShowGodexStartupSummary } from "../src/startup-summary.ts";
@@ -26,6 +27,7 @@ describe("formatGodexStartupSummary", () => {
 
 		expect(summary).toContain("╭─── Godex ");
 		expect(summary).toContain("Welcome back!");
+		expect(stripVTControlCharacters(summary)).toContain("██████");
 		expect(summary).toContain("Model deepseek/deepseek-v4-pro");
 		expect(summary).toContain("existing Godot project");
 		expect(summary).toContain("/tmp/game");
@@ -34,7 +36,7 @@ describe("formatGodexStartupSummary", () => {
 		expect(summary).toContain("scenes 1 · scripts 2 · assets 1");
 		expect(summary).toContain("Recent activity");
 		for (const line of summary.split("\n")) {
-			expect(line.length).toBe(86);
+			expect(stripVTControlCharacters(line).length).toBe(86);
 		}
 	});
 
@@ -44,7 +46,7 @@ describe("formatGodexStartupSummary", () => {
 		expect(summary).toContain("New Godot project initialized");
 		expect(summary).toContain("initialized new Godot project");
 		for (const line of summary.split("\n")) {
-			expect(line.length).toBe(60);
+			expect(stripVTControlCharacters(line).length).toBe(60);
 		}
 	});
 });

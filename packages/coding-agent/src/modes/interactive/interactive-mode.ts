@@ -232,6 +232,8 @@ export interface InteractiveModeOptions {
 	initialMessages?: string[];
 	/** Force verbose startup (overrides quietStartup setting) */
 	verbose?: boolean;
+	/** Suppress built-in startup header for embedded wrappers */
+	quietStartup?: boolean;
 }
 
 export class InteractiveMode {
@@ -578,7 +580,7 @@ export class InteractiveMode {
 		const [fdPath] = await Promise.all([ensureTool("fd"), ensureTool("rg")]);
 		this.fdPath = fdPath;
 
-		if (this.session.scopedModels.length > 0 && (this.options.verbose || !this.settingsManager.getQuietStartup())) {
+		if (this.session.scopedModels.length > 0 && this.shouldShowBuiltInStartup()) {
 			const modelList = this.session.scopedModels
 				.map((sm) => {
 					const thinkingStr = sm.thinkingLevel ? `:${sm.thinkingLevel}` : "";
@@ -597,7 +599,7 @@ export class InteractiveMode {
 		this.ui.addChild(this.headerContainer);
 
 		// Add header with keybindings from config (unless silenced)
-		if (this.options.verbose || !this.settingsManager.getQuietStartup()) {
+		if (this.shouldShowBuiltInStartup()) {
 			const logo = theme.bold(theme.fg("accent", APP_NAME)) + theme.fg("dim", ` v${this.version}`);
 
 			// Build startup instructions using keybinding hint helpers
@@ -694,6 +696,12 @@ export class InteractiveMode {
 
 		// Initialize available provider count for footer display
 		await this.updateAvailableProviderCount();
+	}
+
+	private shouldShowBuiltInStartup(): boolean {
+		if (this.options.verbose) return true;
+		if (this.options.quietStartup) return false;
+		return !this.settingsManager.getQuietStartup();
 	}
 
 	/**

@@ -171,3 +171,12 @@ Attribution:
 ## User Override
 
 If the user's instructions conflict with any rule in this document, ask for explicit confirmation before overriding. Only then execute their instructions.
+
+
+<claude-mem-context>
+# Memory Context
+
+# [Godex] recent context, 2026-06-13 11:00pm GMT+8
+
+No previous sessions found.
+</claude-mem-context>

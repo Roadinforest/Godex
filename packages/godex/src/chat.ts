@@ -28,7 +28,12 @@ export async function runGodexChat(options: GodexChatOptions): Promise<void> {
 	const previousCwd = process.cwd();
 	process.chdir(projectRoot);
 	try {
-		await runCodingAgentMain(["--append-system-prompt", buildGodexSystemPrompt(project), ...options.args]);
+		await runCodingAgentMain([
+			"--quiet-startup",
+			"--append-system-prompt",
+			buildGodexSystemPrompt(project),
+			...options.args,
+		]);
 	} finally {
 		process.chdir(previousCwd);
 	}
