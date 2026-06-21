@@ -1,0 +1,47 @@
+{
+	"name": "@earendil-works/pi-godex",
+	"version": "0.75.5",
+	"description": "Godot-focused agent runtime with worktree exploration and sandboxed validation",
+	"type": "module",
+	"bin": {
+		"godex": "dist/cli.js"
+	},
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"scripts": {
+		"clean": "shx rm -rf dist",
+		"build": "tsgo -p tsconfig.build.json && shx chmod +x dist/cli.js",
+		"test": "vitest --run",
+		"prepublishOnly": "npm run clean && npm run build"
+	},
+	"keywords": [
+		"godot",
+		"agent",
+		"worktree",
+		"sandbox"
+	],
+	"author": "Mario Zechner",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/earendil-works/pi-mono.git",
+		"directory": "packages/godex"
+	},
+	"engines": {
+		"node": ">=22.19.0"
+	},
+	"devDependencies": {
+		"typescript": "5.9.3",
+		"vitest": "3.2.4"
+	}
+}

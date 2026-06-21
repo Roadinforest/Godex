@@ -494,6 +494,7 @@
 				"@anthropic-ai/sdk": "0.91.1",
 				"@aws-sdk/client-bedrock-runtime": "3.1048.0",
 				"@smithy/node-http-handler": "4.7.3",
+				"@smithy/types": "4.14.3",
 				"@google/genai": "1.52.0",
 				"@mistralai/mistralai": "2.2.1",
 				"http-proxy-agent": "7.0.2",
@@ -899,9 +900,9 @@
 			}
 		},
 		"node_modules/@smithy/types": {
-			"version": "4.14.2",
-			"resolved": "https://registry.npmjs.org/@smithy/types/-/types-4.14.2.tgz",
-			"integrity": "sha512-P+otAxbV4CqBybp7EkcJCrig63yE2E7PuNVOmilVMRcx/O+QDzGULTrKsq4DV13gSfak9ObPrWaHl/9bL5YcWw==",
+			"version": "4.14.3",
+			"resolved": "https://registry.npmjs.org/@smithy/types/-/types-4.14.3.tgz",
+			"integrity": "sha512-YupL0ZWmFtJexUN2cHzkvvF/b9pKrtAIfT1o7/oY/Ppu8IYeZ+lDPM5vZdQJaSeA132dJCqojjGC9NhXeF71VQ==",
 			"license": "Apache-2.0",
 			"dependencies": {
 				"tslib": "^2.6.2"
@@ -937,12 +938,12 @@
 			}
 		},
 		"node_modules/@types/node": {
-			"version": "22.19.19",
-			"resolved": "https://registry.npmjs.org/@types/node/-/node-22.19.19.tgz",
-			"integrity": "sha512-dyh/xO2Fh5bYrfWaaqGrRQQGkNdmYw6AmaAUvYeUMNTWQtvb796ikLdmTchRmOlOiIJ1TDXfWgVx1QkUlQ6Hew==",
+			"version": "24.12.4",
+			"resolved": "https://registry.npmjs.org/@types/node/-/node-24.12.4.tgz",
+			"integrity": "sha512-GUUEShf+PBCGW2KaXwcIt3Yk+e3pkKwWKb9GSyM9WQVE+ep2jzmHdGsHzu4wgcZy5fN9FBdVzjpBQsYlpfpgLA==",
 			"license": "MIT",
 			"dependencies": {
-				"undici-types": "~6.21.0"
+				"undici-types": "~7.16.0"
 			}
 		},
 		"node_modules/agent-base": {
