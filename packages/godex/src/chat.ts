@@ -1,7 +1,9 @@
-import { resolve } from "node:path";
+import { access } from "node:fs/promises";
+import { join, resolve } from "node:path";
 import { main as runCodingAgentMain } from "@earendil-works/pi-coding-agent";
 
 import { ensureGodotProject, type inspectGodotProject } from "./godot.ts";
+import { formatGodexStartupSummary, shouldShowGodexStartupSummary } from "./startup-summary.ts";
 
 export interface GodexChatOptions {
 	projectRoot: string;
@@ -10,7 +12,18 @@ export interface GodexChatOptions {
 
 export async function runGodexChat(options: GodexChatOptions): Promise<void> {
 	const projectRoot = resolve(options.projectRoot);
+	const hadProjectFile = await pathExists(join(projectRoot, "project.godot"));
 	const project = await ensureGodotProject(projectRoot);
+	if (shouldShowGodexStartupSummary(options.args)) {
+		console.error(
+			formatGodexStartupSummary(project, {
+				args: options.args,
+				initialized: !hadProjectFile,
+				width: process.stderr.columns,
+			}),
+		);
+		console.error("");
+	}
 
 	const previousCwd = process.cwd();
 	process.chdir(projectRoot);
@@ -18,6 +31,15 @@ export async function runGodexChat(options: GodexChatOptions): Promise<void> {
 		await runCodingAgentMain(["--append-system-prompt", buildGodexSystemPrompt(project), ...options.args]);
 	} finally {
 		process.chdir(previousCwd);
+	}
+}
+
+async function pathExists(path: string): Promise<boolean> {
+	try {
+		await access(path);
+		return true;
+	} catch {
+		return false;
 	}
 }
 
