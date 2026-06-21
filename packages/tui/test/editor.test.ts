@@ -390,6 +390,15 @@ describe("Editor component", () => {
 
 			assert.strictEqual(editor.getText(), "E");
 		});
+
+		it("inserts CJK punctuation from Kitty CSI-u as text", () => {
+			const editor = new Editor(createTestTUI(), defaultEditorTheme);
+
+			editor.handleInput("\x1b[65292u");
+			editor.handleInput("\x1b[12290u");
+
+			assert.strictEqual(editor.getText(), "，。");
+		});
 	});
 
 	describe("Unicode text editing behavior", () => {
@@ -410,6 +419,17 @@ describe("Editor component", () => {
 
 			const text = editor.getText();
 			assert.strictEqual(text, "Hello äöü 😀");
+		});
+
+		it("inserts CJK punctuation as literal text", () => {
+			const editor = new Editor(createTestTUI(), defaultEditorTheme);
+
+			editor.handleInput("，");
+			editor.handleInput("。");
+			editor.handleInput("？");
+			editor.handleInput("！");
+
+			assert.strictEqual(editor.getText(), "，。？！");
 		});
 
 		it("deletes single-code-unit unicode characters (umlauts) with Backspace", () => {

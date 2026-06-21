@@ -48,6 +48,16 @@ describe("StdinBuffer", () => {
 			processInput("hello 世界");
 			assert.deepStrictEqual(emittedSequences, ["h", "e", "l", "l", "o", " ", "世", "界"]);
 		});
+
+		it("should handle CJK punctuation from split UTF-8 buffers", () => {
+			const bytes = Buffer.from("，。");
+
+			for (const byte of bytes) {
+				processInput(Buffer.from([byte]));
+			}
+
+			assert.deepStrictEqual(emittedSequences, ["，", "。"]);
+		});
 	});
 
 	describe("Complete Escape Sequences", () => {

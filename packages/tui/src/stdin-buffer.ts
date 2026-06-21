@@ -17,6 +17,7 @@
  * MIT License - Copyright (c) 2025 opentui
  */
 
+import { StringDecoder } from "node:string_decoder";
 import { EventEmitter } from "events";
 
 const ESC = "\x1b";
@@ -278,6 +279,7 @@ export class StdinBuffer extends EventEmitter<StdinBufferEventMap> {
 	private pasteMode: boolean = false;
 	private pasteBuffer: string = "";
 	private pendingKittyPrintableCodepoint: number | undefined;
+	private readonly decoder = new StringDecoder("utf8");
 
 	constructor(options: StdinBufferOptions = {}) {
 		super();
@@ -291,18 +293,15 @@ export class StdinBuffer extends EventEmitter<StdinBufferEventMap> {
 			this.timeout = null;
 		}
 
-		// Handle high-byte conversion (for compatibility with parseKeypress)
-		// If buffer has single byte > 127, convert to ESC + (byte - 128)
 		let str: string;
 		if (Buffer.isBuffer(data)) {
-			if (data.length === 1 && data[0]! > 127) {
-				const byte = data[0]! - 128;
-				str = `\x1b${String.fromCharCode(byte)}`;
-			} else {
-				str = data.toString();
-			}
+			str = this.decoder.write(data);
 		} else {
 			str = data;
+		}
+
+		if (str.length === 0 && Buffer.isBuffer(data)) {
+			return;
 		}
 
 		if (str.length === 0 && this.buffer.length === 0) {
